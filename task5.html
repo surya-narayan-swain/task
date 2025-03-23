@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Slider</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #333;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 800px;
+      height: 500px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .slider {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slider img {
+      width: 800px;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      border: none;
+      padding: 15px 20px;
+      cursor: pointer;
+      font-size: 24px;
+      border-radius: 50%;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+    }
+
+    .btn:hover {
+      background-color: rgba(0, 0, 0, 0.9);
+      transform: translateY(-50%) scale(1.1);
+    }
+
+    .prev-btn {
+      left: 20px;
+    }
+
+    .next-btn {
+      right: 20px;
+    }
+
+    /* Dots Navigation */
+    .dots-container {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: rgba(255, 255, 255, 1);
+      transform: scale(1.2);
+    }
+
+    .dot:hover {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <div class="slider-container">
+    <div class="slider">
+      <!-- Images will be dynamically added here -->
+    </div>
+    <button class="btn prev-btn">&#10094;</button>
+    <button class="btn next-btn">&#10095;</button>
+    <div class="dots-container">
+      <!-- Dots will be dynamically added here -->
+    </div>
+  </div>
+
+  <script>
+    // Array of image URLs
+    const images = [
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm7pikpAeTMMjwi6nx3PCL1kSZPAcqvgArPg&s',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaC4d0XeG-tei3IAiIk1cvYq0az-4XkeZNbw&s',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSm7pikpAeTMMjwi6nx3PCL1kSZPAcqvgArPg&s',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaC4d0XeG-tei3IAiIk1cvYq0az-4XkeZNbw&s',
+      
+    ];
+
+    // DOM Elements
+    const slider = document.querySelector('.slider');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const dotsContainer = document.querySelector('.dots-container');
+
+    let currentIndex = 0;
+
+    // Function to load images into the slider
+    function loadImages() {
+      images.forEach((image, index) => {
+        const img = document.createElement('img');
+        img.src = image;
+        slider.appendChild(img);
+
+        // Create dots for navigation
+        const dot = document.createElement('div');
+        dot.classList.add('dot');
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+          currentIndex = index;
+          showImage(currentIndex);
+          updateDots();
+        });
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    // Function to show the current image
+    function showImage(index) {
+      const offset = -index * 100;
+      slider.style.transform = `translateX(${offset}%)`;
+    }
+
+    // Function to update the active dot
+    function updateDots() {
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        if (index === currentIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    // Event Listeners for Buttons
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : images.length - 1;
+      showImage(currentIndex);
+      updateDots();
+    });
+
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex < images.length - 1) ? currentIndex + 1 : 0;
+      showImage(currentIndex);
+      updateDots();
+    });
+
+    // Initialize the slider
+    loadImages();
+    showImage(currentIndex);
+  </script>
+</body>
+</html>
